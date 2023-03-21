@@ -1,0 +1,30 @@
+{
+  "name": "express-workshop",
+  "version": "1.0.0",
+  "description": "An API REST using express js",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrlandoDuranPY/express-workshop.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "jwt",
+    "mysql"
+  ],
+  "author": "Jose Orlando Duran Perez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OrlandoDuranPY/express-workshop/issues"
+  },
+  "homepage": "https://github.com/OrlandoDuranPY/express-workshop#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21"
+  }
+}
