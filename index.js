@@ -1,7 +1,11 @@
+const bodyparser = require('body-parser');
 const express = require('express');
 const app = express();
 // Importar la base de datos 'pokedex.json'
 const { pokemon } = require('./pokedex.json');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* ========================================
 GET - Obtener recursos
@@ -11,6 +15,9 @@ PUT - Modificar un recurso
 DELETE - Borrar un recurso
 ========================================= */
 
+/* ========================================
+Pagina Inicial
+========================================= */
 app.get('/', (req, res, next) => {
   return res.status(200).send('Bienvenido al pokedex');
 });
@@ -22,6 +29,10 @@ app.get('/pokemon/:id([0-9]{1,3})', (req, res, next) => {
   // ID = el parametro recibido - 1 (tomando en cuenta la posicion del objeto)
   const id = req.params.id - 1;
 
+  /** Si el id se encuentra entre la posicion 0 (que es el id 1 del pokemon)
+   * y 150 (que es el id 151 del pokemon), entonces retorna el pokemon que
+   * solicitamos, caso contrario retorna el error 404
+   */
   id >= 0 && id <= 150
     ? res.status(200).send(pokemon[req.params.id - 1])
     : res.status(404).send('Pokemon no encontrado');
@@ -50,11 +61,15 @@ app.get('/pokemon/:name([A-Za-z]+)', (req, res, next) => {
     : res.status(404).send('Pokemon no encontrado');
 });
 
+app.post('/pokemon', (req, res, next) => {
+  return res.status(200).send(req.body)
+})
+
 /* ========================================
 Mostrar todos los pokemon
 ========================================= */
 app.get('/pokemon', (req, res, next) => {
-  console.log(pokemon);
+  // Retorna todo el objeto pokemon
   return res.status(200).send(pokemon);
 });
 
