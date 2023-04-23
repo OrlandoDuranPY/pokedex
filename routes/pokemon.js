@@ -22,7 +22,7 @@ pokemon.post('/', (req, res, next) => {
 pokemon.get('/', async (req, res, next) => {
   // Retorna todo el objeto pokemon
   const pkmn = await db.query('SELECT * FROM pokemon');
-  return res.status(200).json(pkmn);
+  return res.status(200).json({code: 1, message: pkmn});
 });
 
 /* ========================================
@@ -31,14 +31,16 @@ Mostrar pokemon por numero
 pokemon.get('/:id([0-9]{1,3})', async (req, res, next) => {
   // ID = el parametro recibido - 1 (tomando en cuenta la posicion del objeto)
   const id = req.params.id - 1;
-  const pkmn = await db.query('SELECT * FROM pokemon');
   /** Si el id se encuentra entre la posicion 0 (que es el id 1 del pokemon)
    * y 150 (que es el id 151 del pokemon), entonces retorna el pokemon que
    * solicitamos, caso contrario retorna el error 404
    */
-  id >= 0 && id <= 150
-    ? res.status(200).json(pkmn[req.params.id - 1])
-    : res.status(404).send('Pokemon no encontrado');
+  if(id >= 1 && id <= 722) {
+    const pkmn = await db.query('SELECT * FROM pokemon WHERE pok_id='+id+';');
+    return res.status(200).json({code: 1, message: pkmn})
+  }
+
+  return res.status(400).send({code: 404, message: "Pokemon no encontrado"})
 });
 
 /* ========================================
@@ -54,17 +56,15 @@ pokemon.get('/:name([A-Za-z]+)', async (req, res, next) => {
   //   const pkmn = pkmDB.filter((p) => {
   //     return p.name.toUpperCase() === name.toUpperCase() && p;
   //   });
-  const pkmn = await db.query(
-    `SELECT * FROM pokemon WHERE pok_name = '${name}'`
-  );
+  const pkmn = await db.query('SELECT * FROM pokemon WHERE pok_name='+name+';');
 
   /** Comprobamos que el arreglo pkmn tenga al menos un elemento
    * en el arreglo, si es asi, entonces retornamos el contenido
    * de lo contrario retornamos un status 404
    */
   pkmn.length > 0
-    ? res.status(200).json(pkmn)
-    : res.status(404).send('Pokemon no encontrado');
+    ? res.status(200).json({code: 1, message: pkmn})
+    : res.status(400).send({code: 404, message: "Pokemon no encontrado"})
 });
 
 module.exports = pokemon;

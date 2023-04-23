@@ -23,10 +23,15 @@ DELETE - Borrar un recurso
 Pagina Inicial
 ========================================= */
 app.get('/', (req, res, next) => {
-  return res.status(200).send('Bienvenido al pokedex');
+  return res.status(200).json({code: 1, message: "Bienvenido al Pokedex"});
 });
 
 app.use('/pokemon', pokemon);
+
+// Middleware para error 404
+app.use( (req, res, next) => {
+  return res.status(404).json({code: 404, message: "UR: no encotrada"});
+})
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Servidor corriendo en el puerto 3000');
