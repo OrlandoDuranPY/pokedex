@@ -15,14 +15,31 @@ Nombre de las variables
 /* ========================================
   Mostrar todos los pokemon
   ========================================= */
-pokemon.post('/', (req, res, next) => {
-  return res.status(200).send(req.body);
+pokemon.post('/', async (req, res, next) => {
+  const { pok_name, pok_height, pok_weight, pok_base_experience } = req.body;
+
+  // Verificar que vengan todos los datos
+  if (pok_name && pok_height && pok_weight && pok_base_experience) {
+    let query =
+      'INSERT INTO pokemon(pok_name, pok_height, pok_weight, pok_base_experience)';
+    query += ` VALUES ('${pok_name}', ${pok_height}, ${pok_weight}, ${pok_base_experience})`;
+    const rows = await db.query(query);
+    console.log(rows);
+
+    if (rows.affectedRows == 1) {
+      return res
+        .status(201)
+        .json({ code: 201, message: 'Pokemon insertado correctamente' });
+    }
+    return res.status(500).json({ code: 500, message: 'Ocurrió un error' });
+  }
+  return res.status(500).json({ code: 500, message: 'Campos incompletos' });
 });
 
 pokemon.get('/', async (req, res, next) => {
   // Retorna todo el objeto pokemon
   const pkmn = await db.query('SELECT * FROM pokemon');
-  return res.status(200).json({code: 1, message: pkmn});
+  return res.status(200).json({ code: 200, message: pkmn });
 });
 
 /* ========================================
@@ -35,12 +52,14 @@ pokemon.get('/:id([0-9]{1,3})', async (req, res, next) => {
    * y 150 (que es el id 151 del pokemon), entonces retorna el pokemon que
    * solicitamos, caso contrario retorna el error 404
    */
-  if(id >= 1 && id <= 722) {
-    const pkmn = await db.query('SELECT * FROM pokemon WHERE pok_id='+id+';');
-    return res.status(200).json({code: 1, message: pkmn})
+  if (id >= 1 && id <= 722) {
+    const pkmn = await db.query(
+      'SELECT * FROM pokemon WHERE pok_id=' + id + ';'
+    );
+    return res.status(200).json({ code: 200, message: pkmn });
   }
 
-  return res.status(400).send({code: 404, message: "Pokemon no encontrado"})
+  return res.status(400).send({ code: 404, message: 'Pokemon no encontrado' });
 });
 
 /* ========================================
@@ -56,15 +75,17 @@ pokemon.get('/:name([A-Za-z]+)', async (req, res, next) => {
   //   const pkmn = pkmDB.filter((p) => {
   //     return p.name.toUpperCase() === name.toUpperCase() && p;
   //   });
-  const pkmn = await db.query('SELECT * FROM pokemon WHERE pok_name='+name+';');
+  const pkmn = await db.query(
+    'SELECT * FROM pokemon WHERE pok_name=' + name + ';'
+  );
 
   /** Comprobamos que el arreglo pkmn tenga al menos un elemento
    * en el arreglo, si es asi, entonces retornamos el contenido
    * de lo contrario retornamos un status 404
    */
   pkmn.length > 0
-    ? res.status(200).json({code: 1, message: pkmn})
-    : res.status(400).send({code: 404, message: "Pokemon no encontrado"})
+    ? res.status(200).json({ code: 200, message: pkmn })
+    : res.status(400).send({ code: 404, message: 'Pokemon no encontrado' });
 });
 
 module.exports = pokemon;
