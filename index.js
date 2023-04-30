@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 // Routing
 const pokemon = require('./routes/pokemon');
+const user = require('./routes/user');
 
 /* ========================================
 Middlewares
@@ -27,6 +28,7 @@ app.get('/', (req, res, next) => {
 });
 
 app.use('/pokemon', pokemon);
+app.use('/user', user);
 
 // Middleware para error 404
 app.use( (req, res, next) => {
