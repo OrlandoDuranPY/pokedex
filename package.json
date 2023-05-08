@@ -25,6 +25,7 @@
   "homepage": "https://github.com/OrlandoDuranPY/express-workshop#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.21"
