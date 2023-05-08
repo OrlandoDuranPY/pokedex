@@ -1,9 +1,14 @@
+// Dependencies
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
 // Routing
 const pokemon = require('./routes/pokemon');
 const user = require('./routes/user');
+// Middlewares
+const auth = require('./middleware/auth');
+const notFound = require('./middleware/notFound');
+const index = require('./middleware/index');
 
 /* ========================================
 Middlewares
@@ -23,17 +28,14 @@ DELETE - Borrar un recurso
 /* ========================================
 Pagina Inicial
 ========================================= */
-app.get('/', (req, res, next) => {
-  return res.status(200).json({code: 1, message: "Bienvenido al Pokedex"});
-});
+app.get('/', index);
 
-app.use('/pokemon', pokemon);
 app.use('/user', user);
+app.use(auth);
+app.use('/pokemon', pokemon);
 
 // Middleware para error 404
-app.use( (req, res, next) => {
-  return res.status(404).json({code: 404, message: "UR: no encotrada"});
-})
+app.use(notFound);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Servidor corriendo en el puerto 3000');

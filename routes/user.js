@@ -7,7 +7,7 @@ const db = require('../config/database');
 /* ========================================
 Agregar un usuario nuevo
 ========================================= */
-user.post('/', async (req, res, next) => {
+user.post('/signin', async (req, res, next) => {
   const { user_name, user_mail, user_password } = req.body;
 
   if (user_name && user_mail && user_password) {
