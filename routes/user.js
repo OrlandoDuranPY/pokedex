@@ -28,6 +28,9 @@ user.post('/signin', async (req, res, next) => {
   return res.status(400).json({ code: 400, message: 'Campos incompletos' });
 });
 
+/* ========================================
+Iniciar sesion
+========================================= */
 user.post('/login', async (req, res, next) => {
   const {user_mail, user_password} = req.body;
   const query = `SELECT * FROM users WHERE user_mail = '${user_mail}' AND user_password = '${user_password}';`;
@@ -37,18 +40,19 @@ user.post('/login', async (req, res, next) => {
     if(rows.length === 1){
       const token = jwt.sign({
         user_id: rows[0].user_id,
-        user_name: rows[0].user_name,
         user_mail: rows[0].user_mail,
-        user_password: rows[0].user_password,
       }, 'debugkey');
       return res.status(200).json({code:200, message: token});
     }else{
-      return res.status(401).json({code:401, message: 'Usuario y/o contraseña incorrectos'});
+      return res.status(200).json({code:401, message: 'Usuario y/o contraseña incorrectos'});
     }
   }
   return res.status(500).json({code:500, message: 'Campos incompletos'});
 });
 
+/* ========================================
+Mostrar todos los usuarios
+========================================= */
 user.get('/', async (req, res, next) => {
     const query = `SELECT * FROM users`;
     const rows = await db.query(query);
